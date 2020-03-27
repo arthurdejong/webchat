@@ -1,6 +1,10 @@
 # global
+*.pyc
+*.pyo
 *~
+__pycache__
 
 # /
+/.tox
 /node_modules
 /static
