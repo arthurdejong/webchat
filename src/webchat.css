@@ -1,0 +1,36 @@
+body {
+  font-size: .875rem;
+  background: grey;
+}
+
+.navbar-brand {
+  font-size: 0.8rem;
+}
+.navbar button {
+  width: 1.8rem;
+  height: 1.8rem;
+  font-size: 0.8rem;
+  border-radius: 100%;
+  padding: 2px;
+}
+.navbar .dropdown-toggle::after {
+  display: none;
+}
+
+.navbar .hangup {
+  transform: rotate(225deg);
+}
+
+.volume {
+  position: absolute;
+  width: 0.1%;
+  min-width: 0.2em;
+  max-height: 90%;
+  right: 0.2em;
+  bottom: 0.2em;
+  opacity: 0.8;
+}
+
+main {
+  padding-top: 48px;
+}
