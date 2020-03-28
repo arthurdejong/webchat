@@ -142,4 +142,28 @@ $(document).ready(function () {
     .catch(error => {
       alert('Error accessing media devices: ' + error)
     })
+
+  var wsURL = `wss://${window.location.hostname}:${window.location.port}${window.location.pathname}channel/test`
+  var socket = new WebSocket(wsURL)
+  socket.onmessage = function (event) {
+    const reader = new FileReader()
+    reader.addEventListener('loadend', (e) => {
+      var msg = JSON.parse(e.srcElement.result)
+      $('#messages').append($('<div class="alert alert-primary">').text(msg.message))
+      // scroll to bottom
+      var messagesDiv = document.getElementById('messages')
+      messagesDiv.scrollTop = messagesDiv.scrollHeight
+    })
+    reader.readAsText(event.data)
+  }
+
+  $('#message-input').submit(function (event) {
+    var message = $(this).find('input').val()
+    if (message) {
+      var msg = {message: message}
+      socket.send(new Blob([JSON.stringify(msg)], {type: 'application/json'}))
+    }
+    $(this).find('input').val('')
+    event.preventDefault()
+  })
 })
