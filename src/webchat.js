@@ -4,6 +4,7 @@ require('@fortawesome/fontawesome-free/js/all')
 require('./webchat.css')
 
 const Server = require('./comm.js')
+const WebRTC = require('./webrtc.js')
 
 $(document).ready(function () {
   // do not close the dropdown when selecting a mic or camera
@@ -100,10 +101,9 @@ $(document).ready(function () {
     return processor
   }
 
-  function activateStream(stream) {
+  function showStream(video, stream) {
     // play the video
-    var video = $('#me')[0]
-    console.log('activateStream', stream)
+    console.log('showStream', stream)
     video.volume = 0
     if ('srcObject' in video) {
       video.srcObject = stream
@@ -139,28 +139,35 @@ $(document).ready(function () {
   navigator.mediaDevices.getUserMedia({audio: true, video: true})
     .then(stream => {
       console.log('Got MediaStream:', stream)
-      activateStream(stream)
+      showStream($('#me')[0], stream)
     })
     .catch(error => {
       alert('Error accessing media devices: ' + error)
     })
 
   var server = new Server()
+  server.ready(function () {
+    var webrtc = new WebRTC(server)
 
-  server.onMessage(function (msg) {
-    $('#messages').append($('<div class="alert alert-primary">').text(msg.message))
-    // scroll to bottom
-    var messagesDiv = document.getElementById('messages')
-    messagesDiv.scrollTop = messagesDiv.scrollHeight
-  })
+    server.onMessage(function (msg) {
+      if (msg.message) {
+        $('#messages').append($('<div class="alert alert-primary">').text(msg.message))
+        // scroll to bottom
+        var messagesDiv = document.getElementById('messages')
+        messagesDiv.scrollTop = messagesDiv.scrollHeight
+      } else {
+        webrtc.handleMessage(msg)
+      }
+    })
 
-  $('#message-input').submit(function (event) {
-    var message = $(this).find('input').val()
-    if (message) {
-      var msg = {message: message}
-      server.sendMessage(msg)
-    }
-    $(this).find('input').val('')
-    event.preventDefault()
+    $('#message-input').submit(function (event) {
+      var message = $(this).find('input').val()
+      if (message) {
+        var msg = {message: message, sender: webrtc.identity}
+        server.sendMessage(msg)
+      }
+      $(this).find('input').val('')
+      event.preventDefault()
+    })
   })
 })
