@@ -3,6 +3,8 @@ require('bootstrap/scss/bootstrap.scss')
 require('@fortawesome/fontawesome-free/js/all')
 require('./webchat.css')
 
+const Server = require('./comm.js')
+
 $(document).ready(function () {
   // do not close the dropdown when selecting a mic or camera
   $(document).on('click', '.dropdown-menu', function (e) {
@@ -143,25 +145,20 @@ $(document).ready(function () {
       alert('Error accessing media devices: ' + error)
     })
 
-  var wsURL = `wss://${window.location.hostname}:${window.location.port}${window.location.pathname}channel/test`
-  var socket = new WebSocket(wsURL)
-  socket.onmessage = function (event) {
-    const reader = new FileReader()
-    reader.addEventListener('loadend', (e) => {
-      var msg = JSON.parse(e.srcElement.result)
-      $('#messages').append($('<div class="alert alert-primary">').text(msg.message))
-      // scroll to bottom
-      var messagesDiv = document.getElementById('messages')
-      messagesDiv.scrollTop = messagesDiv.scrollHeight
-    })
-    reader.readAsText(event.data)
-  }
+  var server = new Server()
+
+  server.onMessage(function (msg) {
+    $('#messages').append($('<div class="alert alert-primary">').text(msg.message))
+    // scroll to bottom
+    var messagesDiv = document.getElementById('messages')
+    messagesDiv.scrollTop = messagesDiv.scrollHeight
+  })
 
   $('#message-input').submit(function (event) {
     var message = $(this).find('input').val()
     if (message) {
       var msg = {message: message}
-      socket.send(new Blob([JSON.stringify(msg)], {type: 'application/json'}))
+      server.sendMessage(msg)
     }
     $(this).find('input').val('')
     event.preventDefault()
