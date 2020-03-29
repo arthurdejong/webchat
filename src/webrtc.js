@@ -1,8 +1,9 @@
 
 class WebRTC {
-  constructor(server) {
+  constructor(server, trackHandler) {
     this.configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]}
     this.server = server
+    this.trackHandler = trackHandler
     this.peerConnections = {}
     this.streams = []
     // generate an identity identifier
@@ -39,6 +40,7 @@ class WebRTC {
       })
       // set up event handler to handled incoming tracks
       peerConnection.addEventListener('track', event => {
+        this.trackHandler(event, peerConnection, identity)
       })
       // support delivering messages through the control channel for ICE
       peerConnection.addEventListener('icecandidate', event => {

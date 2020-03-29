@@ -6,19 +6,27 @@ body {
 .navbar-brand {
   font-size: 0.8rem;
 }
-.navbar button {
+.navbar button, .embed-responsive button {
   width: 1.8rem;
   height: 1.8rem;
   font-size: 0.8rem;
   border-radius: 100%;
   padding: 2px;
 }
-.navbar .dropdown-toggle::after {
+.navbar .dropdown-toggle::after, .embed-responsive .dropdown-toggle::after {
   display: none;
 }
 
 .navbar .hangup {
   transform: rotate(225deg);
+}
+
+#videotemplate {
+  display: none;
+}
+
+video {
+  transition: border-color 0.2s;
 }
 
 .volume {
@@ -29,6 +37,22 @@ body {
   right: 0.2em;
   bottom: 0.2em;
   opacity: 0.8;
+}
+
+.video-info {
+  position: absolute;
+  right: 0.2em;
+  top: 0.2em;
+  opacity: 0.2;
+  transition: opacity 1s;
+}
+
+.video-info:hover {
+  opacity: 0.8;
+}
+
+.video-info .dropdown-menu {
+  min-width: 15rem;
 }
 
 main {

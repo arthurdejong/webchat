@@ -48,9 +48,11 @@ $(document).ready(function () {
       })
   })
 
-  function showStream(video, stream) {
+  function showStream(video, stream, identity) {
     // play the video
     console.log('showStream', stream)
+    video.stream = stream
+    video.identity = identity
     video.volume = 0
     if ('srcObject' in video) {
       video.srcObject = stream
@@ -65,9 +67,44 @@ $(document).ready(function () {
     $(video).volumeindicator(stream)
   }
 
+  $('#video-container').on('show.bs.dropdown', '.video-info', function () {
+    var video = $(this).siblings('video')
+    var peerConnection = video[0].peerConnection
+    var identity = video[0].identity
+    var menu = $(this).find('.dropdown-menu')
+    menu.empty()
+    if (peerConnection) {
+      menu.append($('<span class="dropdown-item-text"></span>').text('connection:' + peerConnection.connectionState))
+      menu.append($('<span class="dropdown-item-text"></span>').text('ICE: ' + peerConnection.iceConnectionState))
+      menu.append($('<span class="dropdown-item-text"></span>').text('signaling: ' + peerConnection.signalingState))
+    }
+    if (identity) {
+      menu.append($('<span class="dropdown-item-text"></span>').text('ID: ' + identity))
+    }
+  })
+
   var server = new Server()
   server.ready(function () {
-    var webrtc = new WebRTC(server)
+    var webrtc = new WebRTC(server, function (event, peerConnection, identity) {
+      if (event.track.kind === 'video') {
+        var clone = $('#videotemplate>:first-child').clone()
+        $('#video-container').append(clone)
+        var video = clone.find('video')[0]
+        var stream = event.streams[0]
+        video.stream = stream
+        video.peerConnection = peerConnection
+        video.identity = identity
+        if ('srcObject' in video) {
+          video.srcObject = stream
+        } else {
+          video.src = URL.createObjectURL(stream)
+        }
+        video.onloadedmetadata = function (e) {
+          video.play()
+        }
+        $(video).volumeindicator(stream)
+      }
+    })
 
     server.onMessage(function (msg) {
       if (msg.message) {
@@ -80,11 +117,17 @@ $(document).ready(function () {
       }
     })
 
-    navigator.mediaDevices.getUserMedia({audio: true, video: true})
+    var constraints = {
+      audio: true,
+      video: {width: 640, height: 480},
+      resizeMode: 'crop-and-scale'
+    }
+
+    navigator.mediaDevices.getUserMedia(constraints)
       .then(stream => {
         console.log('Got MediaStream:', stream)
         stream.getVideoTracks().forEach(track => { track.applyConstraints({frameRate: {max: 10}}) })
-        showStream($('#me')[0], stream)
+        showStream($('#me')[0], stream, webrtc.identity)
         webrtc.addStream(stream)
       })
       .catch(error => {
