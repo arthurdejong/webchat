@@ -2,6 +2,7 @@ require('bootstrap')
 require('bootstrap/scss/bootstrap.scss')
 require('@fortawesome/fontawesome-free/js/all')
 require('./webchat.css')
+require('webrtc-adapter')
 
 const Server = require('./comm.js')
 const WebRTC = require('./webrtc.js')
