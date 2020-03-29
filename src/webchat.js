@@ -136,15 +136,6 @@ $(document).ready(function () {
     })
   }, 500)
 
-  navigator.mediaDevices.getUserMedia({audio: true, video: true})
-    .then(stream => {
-      console.log('Got MediaStream:', stream)
-      showStream($('#me')[0], stream)
-    })
-    .catch(error => {
-      alert('Error accessing media devices: ' + error)
-    })
-
   var server = new Server()
   server.ready(function () {
     var webrtc = new WebRTC(server)
@@ -159,6 +150,16 @@ $(document).ready(function () {
         webrtc.handleMessage(msg)
       }
     })
+
+    navigator.mediaDevices.getUserMedia({audio: true, video: true})
+      .then(stream => {
+        console.log('Got MediaStream:', stream)
+        showStream($('#me')[0], stream)
+        webrtc.addStream(stream)
+      })
+      .catch(error => {
+        alert('Error accessing media devices: ' + error)
+      })
 
     $('#message-input').submit(function (event) {
       var message = $(this).find('input').val()

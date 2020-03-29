@@ -4,6 +4,7 @@ class WebRTC {
     this.configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]}
     this.server = server
     this.peerConnections = {}
+    this.streams = []
     // generate an identity identifier
     const numbers = window.crypto.getRandomValues(new Uint8Array(4))
     const symbols = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -12,9 +13,46 @@ class WebRTC {
     server.sendMessage({announce: true, sender: this.identity})
   }
 
+  addStream(stream) {
+    this.streams.push(stream)
+    // register stream with existing connections
+    Object.keys(this.peerConnections).forEach(identity => {
+      const peerConnection = this.peerConnections[identity]
+      stream.getTracks().forEach(track => { this._addTrack(peerConnection, track, stream) })
+    })
+  }
+
+  _addTrack(peerConnection, track, stream) {
+    // send the track over the peer connection
+    peerConnection.addTrack(track, stream)
+  }
+
   getPeerConnection(identity) {
-    if (!(identity in this.peerConnections)) {
-      const peerConnection = new RTCPeerConnection(this.configuration)
+    const self = this
+    if (!(identity in self.peerConnections)) {
+      const peerConnection = new RTCPeerConnection(self.configuration)
+      // handle connection state changes
+      peerConnection.addEventListener('connectionstatechange', event => {
+      })
+      // set up event handler to handled incoming tracks
+      peerConnection.addEventListener('track', event => {
+      })
+      // support delivering messages through the control channel for ICE
+      peerConnection.addEventListener('icecandidate', event => {
+        self.server.sendMessage({icecandidate: event.candidate, sender: self.identity, receipient: identity})
+      })
+      // re-send the offer if renegotiation is needed
+      peerConnection.addEventListener('negotiationneeded', event => {
+        peerConnection.createOffer().then(offer => {
+          peerConnection.setLocalDescription(offer).then(x => {
+            self.server.sendMessage({offer: offer, sender: self.identity, receipient: identity})
+          })
+        })
+      })
+      // add any existing streams to the connection
+      this.streams.forEach(stream => {
+        stream.getTracks().forEach(track => { this._addTrack(peerConnection, track, stream) })
+      })
       this.peerConnections[identity] = peerConnection
     }
     return this.peerConnections[identity]
@@ -46,6 +84,10 @@ class WebRTC {
       // handle answers to offers
       peerConnection = self.getPeerConnection(msg.sender)
       peerConnection.setRemoteDescription(new RTCSessionDescription(msg.answer)).then(x => {})
+    } else if ('icecandidate' in msg && msg.receipient === self.identity && msg.sender in self.peerConnections) {
+      // handle ICE candidate messages
+      peerConnection = self.getPeerConnection(msg.sender)
+      peerConnection.addIceCandidate(msg.icecandidate)
     }
   }
 }
