@@ -83,6 +83,7 @@ $(document).ready(function () {
     navigator.mediaDevices.getUserMedia({audio: true, video: true})
       .then(stream => {
         console.log('Got MediaStream:', stream)
+        stream.getVideoTracks().forEach(track => { track.applyConstraints({frameRate: {max: 10}}) })
         showStream($('#me')[0], stream)
         webrtc.addStream(stream)
       })

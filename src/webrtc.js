@@ -24,7 +24,10 @@ class WebRTC {
 
   _addTrack(peerConnection, track, stream) {
     // send the track over the peer connection
-    peerConnection.addTrack(track, stream)
+    var sender = peerConnection.addTrack(track, stream)
+    if (track.kind === 'video') {
+      sender.setParameters({encodings: [{maxBitrate: 60000, scaleResolutionDownBy: 2}]})
+    }
   }
 
   getPeerConnection(identity) {
