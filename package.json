@@ -5,7 +5,7 @@
   "private": true,
   "homepage": "https://arthurdejong.org/webchat/",
   "author": "Arthur de Jong <arthur@arthurdejong.org> (https://arthurdejong.org/)",
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "build": "webpack --mode production",
     "dev-build": "webpack --mode development --watch",

@@ -1,3 +1,13 @@
+/*
+ * Webchat WebRTC application
+ * https://arthurdejong.org/webchat/
+ *
+ * Copyright (C) 2020 Arthur de Jong
+ *
+ * Released under the GNU General Public License, either version 3, or
+ * (at your option) any later version.
+ */
+
 function generateSalt() {
   var numbers = window.crypto.getRandomValues(new Uint8Array(4))
   const symbols = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')

@@ -1,3 +1,12 @@
+/*
+ * Webchat WebRTC application
+ * https://arthurdejong.org/webchat/
+ *
+ * Copyright (C) 2020 Arthur de Jong
+ *
+ * Released under the GNU General Public License, either version 3, or
+ * (at your option) any later version.
+ */
 
 class WebRTC {
   constructor(server, trackHandler) {
