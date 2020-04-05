@@ -98,6 +98,7 @@ $(document).ready(function () {
     var webrtc = new WebRTC(server, function (event, peerConnection, identity) {
       if (event.track.kind === 'video') {
         var clone = $('#videotemplate>:first-child').clone()
+        clone.prop('id', 'peer-' + identity)
         $('#video-container').append(clone)
         var video = clone.find('video')[0]
         var stream = event.streams[0]
@@ -113,6 +114,10 @@ $(document).ready(function () {
           video.play()
         }
         $(video).volumeindicator(stream)
+      }
+    }, function (event, peerConnection, identity) {
+      if (peerConnection.connectionState === 'failed' || peerConnection.connectionState === 'disconnected') {
+        $('#peer-' + identity).remove()
       }
     })
 

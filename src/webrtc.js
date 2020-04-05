@@ -9,10 +9,11 @@
  */
 
 class WebRTC {
-  constructor(server, trackHandler) {
+  constructor(server, trackHandler, peerHandler) {
     this.configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]}
     this.server = server
     this.trackHandler = trackHandler
+    this.peerHandler = peerHandler
     this.peerConnections = {}
     this.streams = []
     // generate an identity identifier
@@ -46,6 +47,11 @@ class WebRTC {
       const peerConnection = new RTCPeerConnection(self.configuration)
       // handle connection state changes
       peerConnection.addEventListener('connectionstatechange', event => {
+        this.peerHandler(event, peerConnection, identity)
+        if (peerConnection.connectionState === 'failed' || peerConnection.connectionState === 'disconnected') {
+          peerConnection.close()
+          delete this.peerConnections[identity]
+        }
       })
       // set up event handler to handled incoming tracks
       peerConnection.addEventListener('track', event => {
