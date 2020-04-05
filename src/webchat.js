@@ -137,7 +137,7 @@ $(document).ready(function () {
       .then(stream => {
         console.log('Got MediaStream:', stream)
         stream.getVideoTracks().forEach(track => { track.applyConstraints({frameRate: {max: 10}}) })
-        showStream($('#me')[0], stream, webrtc.identity)
+        showStream($('#me video')[0], stream, webrtc.identity)
         webrtc.addStream(stream)
       })
       .catch(error => {

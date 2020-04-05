@@ -35,6 +35,10 @@ body {
   display: none;
 }
 
+#me video {
+  transform: scaleX(-1);
+}
+
 video {
   transition: border-color 0.2s;
 }
