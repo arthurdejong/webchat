@@ -10,7 +10,6 @@
 
 class WebRTC {
   constructor(server, trackHandler, peerHandler) {
-    this.configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]}
     this.server = server
     this.trackHandler = trackHandler
     this.peerHandler = peerHandler
@@ -44,7 +43,7 @@ class WebRTC {
   getPeerConnection(identity) {
     const self = this
     if (!(identity in self.peerConnections)) {
-      const peerConnection = new RTCPeerConnection(self.configuration)
+      const peerConnection = new RTCPeerConnection(self.server.RTCConfiguration)
       // handle connection state changes
       peerConnection.addEventListener('connectionstatechange', event => {
         this.peerHandler(event, peerConnection, identity)

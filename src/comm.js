@@ -78,6 +78,7 @@ class Server {
       server.salt = salt
       server.key = key
       server.createSocket()
+      server.getRTCConfiguration()
     }).catch((reason) => {
       console.log(reason)
       // generate a new key and store it in the URL
@@ -86,10 +87,14 @@ class Server {
         server.key = key
         window.location.hash = '#' + hash
         server.createSocket()
+        server.getRTCConfiguration()
       })
     })
   }
 
+  /**
+   * Provide the name of the channel on the server to use for communication.
+   */
   async getChannel() {
     const symbols = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
     const encrypted = await window.crypto.subtle.encrypt(
@@ -102,12 +107,33 @@ class Server {
     })
   }
 
+  /**
+   * Get the RTCConfiguration that can be used for peer connections.
+   */
+  getRTCConfiguration() {
+    const server = this
+    $.getJSON('RTCConfiguration.json')
+      .done(function (json) {
+        server.RTCConfiguration = json
+        server.setupHandlers()
+      })
+      .fail(function (jqxhr, textStatus, error) {
+        console.log('Request Failed: ' + error)
+        server.RTCConfiguration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]}
+        server.setupHandlers()
+      })
+  }
+
+  /**
+   * Set up a websocket connection.
+   */
   createSocket() {
+    const server = this
     this.getChannel().then(channel => {
       const url = `wss://${window.location.hostname}:${window.location.port}${window.location.pathname}channel/${channel}`
-      this.socket = new WebSocket(url)
-      const server = this
-      this.socket.addEventListener('open', function (event) {
+      const socket = new WebSocket(url)
+      socket.addEventListener('open', function (event) {
+        server.socket = socket
         server.setupHandlers()
       })
     })
@@ -146,7 +172,7 @@ class Server {
       }
     }
     // ensure the ready handler is called once
-    if (this.socket && this.readyHandler) {
+    if (this.socket && this.RTCConfiguration && this.readyHandler) {
       const readyHandler = this.readyHandler
       this.readyHandler = undefined
       readyHandler(this)
