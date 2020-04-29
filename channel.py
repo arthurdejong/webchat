@@ -10,6 +10,7 @@
 
 import asyncio
 import collections
+import logging
 
 import aiohttp
 import aiohttp.web
@@ -50,4 +51,5 @@ async def get_channel(request):
 if __name__ == '__main__':
     app = aiohttp.web.Application()
     app.add_routes(routes)
+    logging.basicConfig(level=logging.INFO)
     aiohttp.web.run_app(app, host='localhost')
