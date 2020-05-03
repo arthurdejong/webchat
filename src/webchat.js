@@ -18,12 +18,42 @@ const Server = require('./comm.js')
 const WebRTC = require('./webrtc.js')
 require('./volumeindicator')
 
+/**
+ * Return the size of each item to fit the specified container.
+ */
+function optimalSize(count, width, height, ratio) {
+  var currentWaste = width * height
+  var currentR = 0
+  count = Math.max(count, 2)
+  for (var cols = 1; cols <= count; cols++) {
+    var rows = Math.ceil(count / cols)
+    const r = Math.min(width / ratio / cols, height / rows)
+    const waste = width * height - count * ratio * r * r
+    if (waste <= currentWaste) {
+      currentWaste = waste
+      currentR = r
+    }
+  }
+  return {width: currentR * ratio, height: currentR}
+}
+
+function updateGrid() {
+  var container = $('#video-container')
+  var res = optimalSize(container.children().length, container.width(), container.height(), 4 / 3)
+  container.children().css('width', res.width)
+  container.children().css('height', res.height)
+}
+
 $(document).ready(function () {
   // do not close the dropdown when selecting a mic or camera
   $(document).on('click', '.dropdown-menu', function (e) {
     if ($(this).hasClass('keep-open-on-click')) { e.stopPropagation() }
   })
 
+  $(window).resize(function () {
+    updateGrid()
+  })
+  updateGrid()
   // update the list of mics and cameras
   $('#settings').on('show.bs.dropdown', function () {
     $('#mics').empty()
@@ -114,10 +144,12 @@ $(document).ready(function () {
           video.play()
         }
         $(video).volumeindicator(stream)
+        updateGrid()
       }
     }, function (event, peerConnection, identity) {
       if (peerConnection.connectionState === 'failed' || peerConnection.connectionState === 'disconnected') {
         $('#peer-' + identity).remove()
+        updateGrid()
       }
     })
 
