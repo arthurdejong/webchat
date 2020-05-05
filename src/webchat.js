@@ -50,6 +50,7 @@ $(document).ready(function () {
     if ($(this).hasClass('keep-open-on-click')) { e.stopPropagation() }
   })
 
+  // re-layout the video grid on screen size changes
   $(window).resize(function () {
     updateGrid()
   })
@@ -107,6 +108,7 @@ $(document).ready(function () {
     $(video).volumeindicator(stream)
   }
 
+  // show video and connection information
   $('#video-container').on('show.bs.dropdown', '.video-info', function () {
     var video = $(this).siblings('video')
     var peerConnection = video[0].peerConnection
@@ -123,8 +125,10 @@ $(document).ready(function () {
     }
   })
 
+  // set up a connection with the back-end server for message passing
   var server = new Server()
   server.ready(function () {
+    // set up addition and removal of peer connections
     var webrtc = new WebRTC(server, function (event, peerConnection, identity) {
       if (event.track.kind === 'video') {
         var clone = $('#videotemplate>:first-child').clone()
@@ -181,6 +185,7 @@ $(document).ready(function () {
         alert('Error accessing media devices: ' + error)
       })
 
+    // send chat messages across the channel
     $('#message-input').submit(function (event) {
       var message = $(this).find('input').val()
       if (message) {

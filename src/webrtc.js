@@ -23,6 +23,9 @@ class WebRTC {
     server.sendMessage({announce: true, sender: this.identity})
   }
 
+  /**
+   * Send the specified stream to all peers.
+   */
   addStream(stream) {
     this.streams.push(stream)
     // register stream with existing connections
@@ -77,6 +80,9 @@ class WebRTC {
     return this.peerConnections[identity]
   }
 
+  /**
+   * Handle an incoming message on the control channel.
+   */
   handleMessage(msg) {
     const self = this
     var peerConnection
