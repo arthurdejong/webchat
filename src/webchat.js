@@ -133,7 +133,7 @@ $(document).ready(function () {
       if (event.track.kind === 'video') {
         var clone = $('#videotemplate>:first-child').clone()
         clone.prop('id', 'peer-' + identity)
-        $('#video-container').append(clone)
+        $('#video-container').prepend(clone)
         var video = clone.find('video')[0]
         var stream = event.streams[0]
         video.stream = stream
