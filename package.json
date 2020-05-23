@@ -13,32 +13,27 @@
     "htmlfix": "js-beautify -r -f src/index.html --type html --indent-size 2 --end-with-newline"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.1",
-    "bootstrap": "^4.4.1",
-    "jquery": "^3.4.1",
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "bootstrap": "^4.5.0",
+    "jquery": "^3.5.1",
     "jquery-ui": "^1.12.1",
     "popper.js": "^1.16.1",
-    "webrtc-adapter": "^7.5.1"
+    "webrtc-adapter": "^7.6.1"
   },
   "devDependencies": {
-    "autoprefixer": "^9.7.4",
-    "css-loader": "^3.4.2",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "file-loader": "^5.1.0",
-    "html-loader": "^0.5.5",
-    "html-webpack-plugin": "^3.2.0",
-    "js-beautify": "^1.10.3",
+    "autoprefixer": "^9.8.0",
+    "css-loader": "^3.5.3",
+    "eslint": "^7.1.0",
+    "file-loader": "^6.0.0",
+    "html-loader": "^1.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "js-beautify": "^1.11.0",
     "mini-css-extract-plugin": "^0.9.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^8.0.2",
-    "style-loader": "^1.1.3",
-    "webpack": "^4.42.0",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   }
 }

@@ -4,8 +4,9 @@ env:
   es6: true
   jquery: true
 extends:
-  - standard
+  - eslint:recommended
 globals:
+  __dirname: readonly
   Atomics: readonly
   SharedArrayBuffer: readonly
   Plotly: true
@@ -16,3 +17,4 @@ parserOptions:
 rules:
   space-before-function-paren: ["error", {"anonymous": "always", "named": "never", "asyncArrow": "always"}]
   object-curly-spacing: ["error", "never"]
+  no-unused-vars: ["error", { "vars": "all", "args": "none", "ignoreRestSiblings": false }]
