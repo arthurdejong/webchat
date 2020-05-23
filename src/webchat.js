@@ -55,39 +55,6 @@ $(document).ready(function () {
     updateGrid()
   })
   updateGrid()
-  // update the list of mics and cameras
-  $('#settings').on('show.bs.dropdown', function () {
-    $('#mics').empty()
-    $('#cams').empty()
-    navigator.mediaDevices.enumerateDevices()
-      .then(devices => {
-        devices.forEach(function (device, idx) {
-          if (device.kind === 'audioinput') {
-            var radio = $(`
-                  <div class="custom-control custom-radio">
-                    <input type="radio" id="audioinput${idx}" name="audioinput" class="custom-control-input">
-                    <label class="custom-control-label" for="audioinput${idx}"></label>
-                  </div>
-              `)
-            radio.find('input').attr('value', device.deviceId)
-            radio.find('label').text(device.label || 'Unknown')
-            radio.find('label').prepend('<i class="fa fa-microphone small"></i> ')
-            $('#mics').append(radio)
-          } else if (device.kind === 'videoinput') {
-            radio = $(`
-                  <div class="custom-control custom-radio">
-                    <input type="radio" id="videoinput${idx}" name="videoinput" class="custom-control-input">
-                    <label class="custom-control-label" for="videoinput${idx}"></label>
-                  </div>
-              `)
-            radio.find('input').attr('value', device.deviceId)
-            radio.find('label').text(device.label || 'Unknown')
-            radio.find('label').prepend('<i class="fa fa-video small"></i> ')
-            $('#cams').append(radio)
-          }
-        })
-      })
-  })
 
   function showStream(video, stream, identity) {
     // play the video
