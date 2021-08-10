@@ -61,13 +61,13 @@ class WebRTC {
       })
       // support delivering messages through the control channel for ICE
       peerConnection.addEventListener('icecandidate', event => {
-        self.server.sendMessage({icecandidate: event.candidate, sender: self.identity, receipient: identity})
+        self.server.sendMessage({icecandidate: event.candidate, sender: self.identity, recipient: identity})
       })
       // re-send the offer if renegotiation is needed
       peerConnection.addEventListener('negotiationneeded', event => {
         peerConnection.createOffer().then(offer => {
           peerConnection.setLocalDescription(offer).then(x => {
-            self.server.sendMessage({offer: offer, sender: self.identity, receipient: identity})
+            self.server.sendMessage({offer: offer, sender: self.identity, recipient: identity})
           })
         })
       })
@@ -93,10 +93,10 @@ class WebRTC {
       peerConnection = self.getPeerConnection(msg.sender)
       peerConnection.createOffer().then(offer => {
         peerConnection.setLocalDescription(offer).then(x => {
-          self.server.sendMessage({offer: offer, sender: self.identity, receipient: msg.sender})
+          self.server.sendMessage({offer: offer, sender: self.identity, recipient: msg.sender})
         })
       })
-    } else if (msg.offer && msg.receipient === self.identity) {
+    } else if (msg.offer && msg.recipient === self.identity) {
       // handle offers for us and answer
       peerConnection = self.getPeerConnection(msg.sender)
       peerConnection.setRemoteDescription(new RTCSessionDescription(msg.offer))
@@ -109,7 +109,7 @@ class WebRTC {
       // handle answers to offers
       peerConnection = self.getPeerConnection(msg.sender)
       peerConnection.setRemoteDescription(new RTCSessionDescription(msg.answer)).then(x => {})
-    } else if ('icecandidate' in msg && msg.receipient === self.identity && msg.sender in self.peerConnections) {
+    } else if ('icecandidate' in msg && msg.recipient === self.identity && msg.sender in self.peerConnections) {
       // handle ICE candidate messages
       peerConnection = self.getPeerConnection(msg.sender)
       peerConnection.addIceCandidate(msg.icecandidate)
