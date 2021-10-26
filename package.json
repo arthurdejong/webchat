@@ -16,7 +16,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "bootstrap": "^4.6.0",
     "jquery": "^3.6.0",
-    "jquery-ui": "^1.12.1",
+    "jquery-ui": "^1.13.0",
     "popper.js": "^1.16.1",
     "webrtc-adapter": "^8.1.0"
   },
