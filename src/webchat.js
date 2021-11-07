@@ -8,6 +8,9 @@
  * (at your option) any later version.
  */
 
+// make jQuery available so Bootstrap notices
+window.jQuery = jQuery
+
 require('bootstrap')
 require('bootstrap/scss/bootstrap.scss')
 require('@fortawesome/fontawesome-free/js/all')

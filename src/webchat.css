@@ -44,6 +44,8 @@ video {
   width: 0.1%;
   min-width: 0.2em;
   max-height: 90%;
+  top: auto;
+  left: auto;
   right: 0.2em;
   bottom: 0.2em;
   opacity: 0.8;
@@ -51,8 +53,11 @@ video {
 
 .video-info {
   position: absolute;
-  right: 0.2em;
   top: 0.2em;
+  left: auto;
+  right: 0.2em;
+  width: auto;
+  height: auto;
   opacity: 0.2;
   transition: opacity 1s;
 }
